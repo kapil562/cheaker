@@ -1,0 +1,53 @@
+{
+  "US": {
+    "banks": [
+      {"name": "Chase Bank", "codes": ["CHASE", "JPM"]},
+      {"name": "Bank of America", "codes": ["BOFA", "BAC"]},
+      {"name": "Wells Fargo", "codes": ["WELLS", "WFC"]},
+      {"name": "Citibank", "codes": ["CITI", "C"]},
+      {"name": "Capital One", "codes": ["CAP1", "COF"]},
+      {"name": "Discover Bank", "codes": ["DISCOVER", "DFS"]},
+      {"name": "American Express", "codes": ["AMEX", "AXP"]},
+      {"name": "US Bank", "codes": ["USB", "USBC"]},
+      {"name": "PNC Bank", "codes": ["PNC"]},
+      {"name": "TD Bank", "codes": ["TDB"]}
+    ]
+  },
+  "UK": {
+    "banks": [
+      {"name": "Barclays", "codes": ["BARC", "BARCLAYS"]},
+      {"name": "HSBC", "codes": ["HSBC"]},
+      {"name": "Lloyds Bank", "codes": ["LLOYDS", "LLOY"]},
+      {"name": "Nationwide", "codes": ["NATIONWIDE"]},
+      {"name": "NatWest", "codes": ["NATWEST", "NW"]}
+    ]
+  },
+  "IN": {
+    "banks": [
+      {"name": "State Bank of India", "codes": ["SBI"]},
+      {"name": "ICICI Bank", "codes": ["ICICI"]},
+      {"name": "HDFC Bank", "codes": ["HDFC"]},
+      {"name": "Axis Bank", "codes": ["AXIS"]},
+      {"name": "Kotak Mahindra Bank", "codes": ["KOTAK"]},
+      {"name": "Yes Bank", "codes": ["YES"]},
+      {"name": "Punjab National Bank", "codes": ["PNB"]}
+    ]
+  },
+  "CA": {
+    "banks": [
+      {"name": "Royal Bank of Canada", "codes": ["RBC"]},
+      {"name": "Toronto-Dominion Bank", "codes": ["TD"]},
+      {"name": "Bank of Nova Scotia", "codes": ["SCOTIA"]},
+      {"name": "Bank of Montreal", "codes": ["BMO"]},
+      {"name": "CIBC", "codes": ["CIBC"]}
+    ]
+  },
+  "AU": {
+    "banks": [
+      {"name": "Commonwealth Bank", "codes": ["CBA"]},
+      {"name": "Westpac", "codes": ["WESTPAC"]},
+      {"name": "ANZ", "codes": ["ANZ"]},
+      {"name": "NAB", "codes": ["NAB"]}
+    ]
+  }
+}

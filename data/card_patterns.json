@@ -1,0 +1,91 @@
+{
+  "visa": {
+    "prefix": "4",
+    "lengths": [13, 16],
+    "cvv_length": 3,
+    "brand": "Visa",
+    "type": "Credit/Debit",
+    "issuer": "Visa International",
+    "patterns": [
+      "4[0-9]{12}(?:[0-9]{3})?"
+    ]
+  },
+  "mastercard": {
+    "prefix": "51-55, 2221-2720",
+    "lengths": [16],
+    "cvv_length": 3,
+    "brand": "Mastercard",
+    "type": "Credit/Debit",
+    "issuer": "Mastercard Worldwide",
+    "patterns": [
+      "5[1-5][0-9]{14}",
+      "2(?:2[2-9]|[3-6][0-9])[0-9]{12}"
+    ]
+  },
+  "amex": {
+    "prefix": "34, 37",
+    "lengths": [15],
+    "cvv_length": 4,
+    "brand": "American Express",
+    "type": "Credit",
+    "issuer": "American Express",
+    "patterns": [
+      "3[47][0-9]{13}"
+    ]
+  },
+  "discover": {
+    "prefix": "6011, 65, 644-649",
+    "lengths": [16],
+    "cvv_length": 3,
+    "brand": "Discover",
+    "type": "Credit",
+    "issuer": "Discover Financial Services",
+    "patterns": [
+      "6(?:011|5[0-9]{2})[0-9]{12}"
+    ]
+  },
+  "diners": {
+    "prefix": "300-305, 36, 38",
+    "lengths": [14],
+    "cvv_length": 3,
+    "brand": "Diners Club",
+    "type": "Credit",
+    "issuer": "Diners Club International",
+    "patterns": [
+      "3(?:0[0-5]|[68][0-9])[0-9]{11}"
+    ]
+  },
+  "jcb": {
+    "prefix": "3528-3589",
+    "lengths": [16],
+    "cvv_length": 3,
+    "brand": "JCB",
+    "type": "Credit",
+    "issuer": "JCB International",
+    "patterns": [
+      "35[0-9]{14}"
+    ]
+  },
+  "unionpay": {
+    "prefix": "62",
+    "lengths": [16, 17, 18, 19],
+    "cvv_length": 3,
+    "brand": "UnionPay",
+    "type": "Credit/Debit",
+    "issuer": "China UnionPay",
+    "patterns": [
+      "62[0-9]{14,17}"
+    ]
+  },
+  "maestro": {
+    "prefix": "5018, 5020, 5038, 5612, 5893, 6304, 6759, 6761, 6762, 6763",
+    "lengths": [12, 16, 18, 19],
+    "cvv_length": 3,
+    "brand": "Maestro",
+    "type": "Debit",
+    "issuer": "Mastercard Worldwide",
+    "patterns": [
+      "(?:5[06789]|6)[0-9]{11,18}"
+    ]
+  }
+}

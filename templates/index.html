@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced CC Checker</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="checking-bar" id="checkingBar">
+        <div class="bar-inner">
+            <span>Checking Cards</span>
+            <span id="checkingProgress">0 / 0</span>
+            <span id="checkingStats"></span>
+            <button class="btn btn-danger btn-sm" onclick="stopCheck()">Stop</button>
+        </div>
+        <div class="bar-progress"><div class="bar-fill" id="checkingBarFill" style="width:0%"></div></div>
+    </div>
+
+    <div class="container">
+        <div class="card-main">
+            <div class="header-section">
+                <h1><span>CC</span> Checker <small style="font-size:12px;color:var(--text-muted);">v7.0</small></h1>
+                <div class="header-badges">
+                    <span class="header-badge gateway-count">5 Gateways</span>
+                    <span class="header-badge">10 Stripe Ver.</span>
+                    <span class="header-badge live-badge">LIVE</span>
+                    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()"></button>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" data-tab="check" onclick="switchTab('check')">Check Cards</button>
+                <button class="tab" data-tab="generate" onclick="switchTab('generate')">Generate Cards</button>
+                <button class="tab" data-tab="history" onclick="switchTab('history')">History</button>
+                <button class="tab" data-tab="dashboard" onclick="switchTab('dashboard')">Dashboard</button>
+                <button class="tab" data-tab="proxies" onclick="switchTab('proxies')">Proxies</button>
+            </div>
+
+            <div class="tab-content active" id="tab-check">
+                <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:20px;">
+                    <div>
+                        <div class="drop-zone" id="dropZone">
+                            <p><strong>Drop cards here or paste below</strong></p>
+                            <p class="text-muted small">Format: number|mm|yy|cvv (one per line)</p>
+                            <textarea id="cardInput" rows="8" placeholder="4111111111111111|12|26|123&#10;5555555555554444|06|27|456"></textarea>
+                        </div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+                            <button class="btn btn-primary" id="checkBtn" onclick="startCheck()">Check Cards</button>
+                            <button class="btn btn-secondary" onclick="loadSample()">Sample</button>
+                            <button class="btn btn-secondary" onclick="clearAll()">Clear</button>
+                            <span class="text-muted small" style="align-self:center;">Ctrl+Enter</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="options-panel">
+                            <h6>Options</h6>
+                            <div style="margin-bottom:10px;">
+                                <label>Gateway</label>
+                                <select id="gatewaySelect">
+                                    <option value="all">All Gateways</option>
+                                    <option value="stripe">Stripe</option>
+                                    <option value="razorpay">Razorpay</option>
+                                    <option value="adyen">Adyen (Picsart)</option>
+                                    <option value="paypal">PayPal Commerce</option>
+                                    <option value="shopify">Shopify</option>
+                                </select>
+                            </div>
+                            <div style="margin-bottom:10px;">
+                                <label>Stripe Version</label>
+                                <select id="stripeVersionSelect">
+                                    <option value="1">v1</option><option value="2">v2</option><option value="3">v3</option>
+                                    <option value="4">v4</option><option value="5">v5</option><option value="6">v6</option>
+                                    <option value="7">v7</option><option value="8">v8</option><option value="9">v9</option>
+                                    <option value="10">v10</option>
+                                </select>
+                            </div>
+                            <div style="margin-bottom:10px;">
+                                <label>Amount ($)</label>
+                                <input type="number" id="amountInput" value="1" min="0.01" step="0.01">
+                            </div>
+                            <div style="margin-bottom:10px;">
+                                <label>Proxy (optional)</label>
+                                <input type="text" id="proxyInput" placeholder="http://user:pass@host:port">
+                            </div>
+                            <div style="margin-bottom:10px;">
+                                <label>Shopify Site</label>
+                                <input type="text" id="shopifySiteInput" placeholder="example.myshopify.com">
+                            </div>
+                            <div style="margin-bottom:10px;">
+                                <label class="checkbox-label"><input type="checkbox" id="autoRetryCheckbox" checked> Auto-Retry Stripe</label>
+                            </div>
+                            <div style="margin-bottom:10px;">
+                                <label class="checkbox-label"><input type="checkbox" id="parallelCheckbox" checked> Parallel Checking</label>
+                            </div>
+                            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                                <button class="btn btn-success btn-sm" onclick="exportResults('csv')">CSV</button>
+                                <button class="btn btn-success btn-sm" onclick="exportResults('json')">JSON</button>
+                                <button class="btn btn-success btn-sm" onclick="exportResults('txt')">TXT</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="statsContainer" style="display:none;">
+                    <div class="stats-grid">
+                        <div class="stat-card total"><div class="stat-number" id="totalCount">0</div><div class="stat-label">Total</div></div>
+                        <div class="stat-card charged"><div class="stat-number" id="chargedCount">0</div><div class="stat-label">Charged</div></div>
+                        <div class="stat-card live"><div class="stat-number" id="liveCount">0</div><div class="stat-label">Live</div></div>
+                        <div class="stat-card dead"><div class="stat-number" id="deadCount">0</div><div class="stat-label">Dead</div></div>
+                        <div class="stat-card ccn"><div class="stat-number" id="ccnCount">0</div><div class="stat-label">CCN</div></div>
+                        <div class="stat-card" style="border-color:var(--success);"><div class="stat-number" style="color:var(--success);" id="chargedAmount">$0.00</div><div class="stat-label">Charged Amount</div></div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-card">
+                            <h6>Status Distribution</h6>
+                            <div class="chart-bar"><span class="chart-bar-label">Charged</span><div class="chart-bar-track"><div class="chart-bar-fill charged" id="chart-charged" style="width:0%"></div></div><span id="chart-charged-count" style="font-size:12px;font-weight:600;min-width:20px;">0</span></div>
+                            <div class="chart-bar"><span class="chart-bar-label">Live</span><div class="chart-bar-track"><div class="chart-bar-fill live" id="chart-live" style="width:0%"></div></div><span id="chart-live-count" style="font-size:12px;font-weight:600;min-width:20px;">0</span></div>
+                            <div class="chart-bar"><span class="chart-bar-label">Dead</span><div class="chart-bar-track"><div class="chart-bar-fill dead" id="chart-dead" style="width:0%"></div></div><span id="chart-dead-count" style="font-size:12px;font-weight:600;min-width:20px;">0</span></div>
+                            <div class="chart-bar"><span class="chart-bar-label">CCN</span><div class="chart-bar-track"><div class="chart-bar-fill ccn" id="chart-ccn" style="width:0%"></div></div><span id="chart-ccn-count" style="font-size:12px;font-weight:600;min-width:20px;">0</span></div>
+                            <div class="chart-bar"><span class="chart-bar-label">Error</span><div class="chart-bar-track"><div class="chart-bar-fill error" id="chart-error" style="width:0%"></div></div><span id="chart-error-count" style="font-size:12px;font-weight:600;min-width:20px;">0</span></div>
+                        </div>
+                        <div class="chart-card">
+                            <h6>Real-time Stats</h6>
+                            <div style="padding:10px 0;">
+                                <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="text-muted">Total Processed</span><strong id="statProcessed">0</strong></div>
+                                <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="text-muted">Success Rate</span><strong id="statRate">0%</strong></div>
+                                <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="text-muted">Avg per Card</span><strong id="statAvg">-</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="resultsContainer" style="display:none;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                        <h5>Results <small class="text-muted">(BEST = Best Gateway)</small></h5>
+                        <span class="text-muted small" id="resultMeta"></span>
+                    </div>
+                    <div class="filter-bar">
+                        <button class="filter-btn active" data-filter="all" onclick="filterResults('all')">All</button>
+                        <button class="filter-btn filter-charged" data-filter="charged" onclick="filterResults('charged')">V Charged</button>
+                        <button class="filter-btn filter-live" data-filter="live" onclick="filterResults('live')">O Live</button>
+                        <button class="filter-btn filter-dead" data-filter="dead" onclick="filterResults('dead')">X Dead</button>
+                        <button class="filter-btn filter-ccn" data-filter="ccn" onclick="filterResults('ccn')">! CCN</button>
+                        <button class="filter-btn filter-error" data-filter="error" onclick="filterResults('error')">? Error</button>
+                        <span class="filter-count" id="filterCount"></span>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Card</th>
+                                    <th>BIN / Country</th>
+                                    <th>Gateway Results</th>
+                                    <th>Summary</th>
+                                    <th>Best Status</th>
+                                    <th>Best Gateway</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-generate">
+                <div class="options-panel" style="max-width:600px;">
+                    <h6>Card Generator</h6>
+                    <div style="display:flex;gap:10px;margin-bottom:15px;flex-wrap:wrap;">
+                        <div style="flex:1;min-width:150px;">
+                            <label>Network</label>
+                            <select id="genNetwork">
+                                <option value="visa">Visa</option>
+                                <option value="mastercard">Mastercard</option>
+                                <option value="amex">American Express</option>
+                                <option value="discover">Discover</option>
+                                <option value="jcb">JCB</option>
+                                <option value="diners">Diners Club</option>
+                                <option value="unionpay">UnionPay</option>
+                                <option value="maestro">Maestro</option>
+                            </select>
+                        </div>
+                        <div style="flex:1;min-width:100px;">
+                            <label>Count</label>
+                            <input type="number" id="genCount" value="10" min="1" max="500">
+                        </div>
+                        <div style="display:flex;align-items:flex-end;gap:6px;">
+                            <button class="btn btn-primary" onclick="generateCards()">Generate</button>
+                            <button class="btn btn-secondary" onclick="copyGenerated()">Copy All</button>
+                        </div>
+                    </div>
+                    <textarea id="genOutput" rows="4" placeholder="Generated cards will appear here..." readonly style="min-height:100px;"></textarea>
+                    <div class="gen-grid" id="genGrid"></div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-history">
+                <div id="historyList">
+                    <div class="empty-state"><p>Loading history...</p></div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-dashboard">
+                <div id="dashboardContent">
+                    <div class="empty-state"><p>Loading dashboard...</p></div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-proxies">
+                <div class="options-panel" style="max-width:600px;margin-bottom:20px;">
+                    <h6>Add Proxies</h6>
+                    <textarea id="proxyInputArea" rows="4" placeholder="One proxy per line:&#10;http://user:pass@host:port&#10;socks5://host:port" style="min-height:100px;"></textarea>
+                    <div style="display:flex;gap:8px;margin-top:10px;">
+                        <button class="btn btn-primary" onclick="addProxies()">Add Proxies</button>
+                        <button class="btn btn-secondary" onclick="loadProxies()">Refresh</button>
+                    </div>
+                </div>
+                <div id="proxyList">
+                    <div class="empty-state"><p>No proxies loaded</p></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
