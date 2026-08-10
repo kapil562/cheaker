@@ -7,15 +7,9 @@
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/index.py" },
+    { "src": "/static/(.*)", "dest": "/static/$1" },
     { "src": "/ws", "dest": "/api/index.py" },
-    { "src": "/check", "dest": "/api/index.py" },
-    { "src": "/stats", "dest": "/api/index.py" },
-    { "src": "/sessions", "dest": "/api/index.py" },
-    { "src": "/sessions/(.*)", "dest": "/api/index.py" },
-    { "src": "/proxies", "dest": "/api/index.py" },
-    { "src": "/generate", "dest": "/api/index.py" },
-    { "src": "/batch-generate", "dest": "/api/index.py" },
-    { "src": "/networks", "dest": "/api/index.py" },
-    { "src": "/health", "dest": "/api/index.py" }
+    { "src": "/(.*\\.(css|js|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot))", "dest": "/public/$1" },
+    { "src": "/(.*)", "dest": "/api/index.py" }
   ]
 }
