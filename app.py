@@ -30,17 +30,22 @@ from gateways.shopify import ShopifyGateway
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-for d in ["static/css", "static/js", "templates", "data"]:
-    Path(d).mkdir(parents=True, exist_ok=True)
+import os
+IS_SERVERLESS = os.environ.get("VERCEL", "") != ""
+
+if not IS_SERVERLESS:
+    for d in ["static/css", "static/js", "templates", "data"]:
+        Path(d).mkdir(parents=True, exist_ok=True)
 
 init_db()
 
-try:
-    saved_proxies = get_proxies()
-    if saved_proxies:
-        proxy_rotator.load_proxies(saved_proxies)
-except Exception:
-    pass
+if not IS_SERVERLESS:
+    try:
+        saved_proxies = get_proxies()
+        if saved_proxies:
+            proxy_rotator.load_proxies(saved_proxies)
+    except Exception:
+        pass
 
 
 class MultiGatewayRequest(BaseModel):
@@ -182,18 +187,24 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 async def home():
-    with open("templates/index.html", "r", encoding="utf-8") as f:
-        return HTMLResponse(content=f.read())
+    try:
+        with open("templates/index.html", "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    except FileNotFoundError:
+        return HTMLResponse(content="<h1>CC Checker - Deployed on Vercel</h1><p>API is running. Use /api/check endpoint.</p>")
 
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    await manager.connect(websocket)
     try:
-        while True:
-            await websocket.receive_text()
-    except WebSocketDisconnect:
-        manager.disconnect(websocket)
+        await manager.connect(websocket)
+        try:
+            while True:
+                await websocket.receive_text()
+        except WebSocketDisconnect:
+            manager.disconnect(websocket)
+    except Exception:
+        pass
 
 
 @app.post("/api/check")

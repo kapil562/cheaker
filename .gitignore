@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+*.pyo
+data/checker.db
+data/checker.db-shm
+data/checker.db-wal
+*.log
+.env
+.vercel
