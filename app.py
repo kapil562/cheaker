@@ -182,7 +182,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+if not IS_SERVERLESS:
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -191,7 +192,25 @@ async def home():
         with open("templates/index.html", "r", encoding="utf-8") as f:
             return HTMLResponse(content=f.read())
     except FileNotFoundError:
-        return HTMLResponse(content="<h1>CC Checker - Deployed on Vercel</h1><p>API is running. Use /api/check endpoint.</p>")
+        return HTMLResponse(content="<h1>CC Checker</h1>")
+
+
+@app.get("/static/css/style.css")
+async def serve_css():
+    try:
+        with open("static/css/style.css", "r", encoding="utf-8") as f:
+            return StreamingResponse(iter([f.read()]), media_type="text/css")
+    except FileNotFoundError:
+        return StreamingResponse(iter([""]), media_type="text/css")
+
+
+@app.get("/static/js/app.js")
+async def serve_js():
+    try:
+        with open("static/js/app.js", "r", encoding="utf-8") as f:
+            return StreamingResponse(iter([f.read()]), media_type="application/javascript")
+    except FileNotFoundError:
+        return StreamingResponse(iter([""]), media_type="application/javascript")
 
 
 @app.websocket("/ws")
