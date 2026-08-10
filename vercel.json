@@ -7,7 +7,7 @@
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/index.py" },
-    { "src": "/static/(.*)", "dest": "/static/$1" },
+    { "src": "/static/(.*)", "dest": "/public/static/$1" },
     { "src": "/ws", "dest": "/api/index.py" },
     { "src": "/(.*\\.(css|js|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot))", "dest": "/public/$1" },
     { "src": "/(.*)", "dest": "/api/index.py" }
